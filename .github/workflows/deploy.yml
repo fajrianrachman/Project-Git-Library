@@ -1,0 +1,20 @@
+name: CI/CD Auto Pull and Rebuild
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Pull Latest Code
+        run: |
+          cd /mnt/c/laragon/www/projeklibrarywap
+          git pull origin main
+
+      - name: Rebuild and Restart Docker Containers
+        run: |
+          cd /mnt/c/laragon/www/projeklibrarywap
+          sudo docker compose up -d --build
