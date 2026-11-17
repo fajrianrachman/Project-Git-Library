@@ -18,9 +18,28 @@ class Fine {
     }
 
     public function payFine($fineId, $methodId, $amount) {
-        $stmt = $this->db->prepare("INSERT INTO finepayment (FineID, PaymentMethodID, Amount, PaymentDate) 
-                                    VALUES (:f_id, :m_id, :amt, NOW())");
-        return $stmt->execute([':f_id' => $fineId, ':m_id' => $methodId, ':amt' => $amount]);
+        try {
+            $this->db->beginTransaction();
+
+            // 1. Catat transaksi pembayaran ke tabel finepayment
+            $stmt = $this->db->prepare("INSERT INTO finepayment (FineID, PaymentMethodID, Amount, PaymentDate) 
+                                        VALUES (:f_id, :m_id, :amt, NOW())");
+            $stmt->execute([
+                ':f_id' => $fineId,
+                ':m_id' => $methodId,
+                ':amt'  => $amount
+            ]);
+
+            // 2. Ubah status tagihan pada tabel fine menjadi 'Paid'
+            $update = $this->db->prepare("UPDATE fine SET Status = 'Paid' WHERE FineID = :f_id");
+            $update->execute([':f_id' => $fineId]);
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
 
     public function getPaymentMethods() {
