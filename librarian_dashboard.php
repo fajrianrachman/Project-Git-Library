@@ -182,7 +182,7 @@ if (isset($_GET['cover_id'])) {
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Librarian Dashboard - Sistem Perpustakaan</title>
+    <title>Dashboard Librabrian - Sistem Perpustakaan</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef2f5; margin: 0; padding: 20px; }
         .navbar { background: #2c3e50; color: white; padding: 15px 20px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
